@@ -309,21 +309,43 @@ endmodule
 
 //Multiplier & Divisor
 //Behavioral for now, may change later
-module bit16_multiplier(out, a, b)
-	input [15:0] a, b;
-	output [15:0] out;
-
-	assign out = a * b;
-
-endmodule
-
-module bit16_divisor(out, a, b)
+module multiplier_16bit(a, b, out, error);
     input [15:0] a, b;
-    output [15:0] out;
+    output [15:0] out; reg [15:0] out;
+    output error; reg error;
+    //output error; wire error;
+    reg [31:0] mult;
+    integer i, j; 
 
-    assign out = a / b;
+    initial
+    begin
+        error = 0;
+    end
+
+    always @(a, b)
+    begin
+        mult = a*b;
+        for (i = 31; i > 15; i = i - 1) 
+        begin
+            error = error | mult[i];
+            out[i-16] = mult[i-16];    
+        end
+    end
 endmodule
 
+module divider_16bit(a, b, out, error);
+    input [15:0] a, b;
+    output [15:0] out; reg [15:0] out;
+    output error; reg error;
+    //output error; wire error;
+    integer i, j; 
+
+    always @(a, b)
+    begin
+        out = a/b;
+        error = ~(|b);
+    end
+endmodule
 /**********************************
 *****      TESTBENCH       ********
 **********************************/
@@ -333,7 +355,8 @@ module testbench();
 
     integer i;
 
-    reg error;
+    wire error_m;
+    wire error_d;
     reg [3:0] opcode;
     reg [15:0] a_in, b_in;
     wire [15:0] a, b;
@@ -352,6 +375,8 @@ module testbench();
     bit16_xor xor_test(out[6], a, b);
     bit16_xnor xnor_test(out[7], a, b);
     bit16_adder adder_test(a, b, mode[15:0], out[8][0], out[9]);
+    multiplier_16bit mult_test(a, b, out[10], error_m);
+    divider_16bit    div_test(a, b, out[11], error_d);
 
     
     MUX16   mux_output_select(out, select, final_output);
@@ -377,12 +402,15 @@ module testbench();
     //Stimulous + Display Thread
     initial begin
         mode = 0;
-        a_in = 'b0101001011001001; // 21193
-        b_in = 'b0000110100111110; // 3390
-        opcode = 9;
+        //a_in = 'b0101001011001001; // 21193
+        //b_in = 'b0000110100111110; // 3390
+        a_in = 40000;
+        b_in = 50001;
+        opcode = 11;
         for (i = 1; i < 12; i = i + 1) begin
             #1;
-            $display("ADD %d + %d = %d", a, b, final_output);
+            $display("DIV %d / %d = %d", a, b, final_output);
+            $display("Error = %d", error_d);
         end
         $finish();
     end
@@ -397,14 +425,6 @@ Clear
 SL & SR
 Modulus
 */
-
-
-
-
-
-
-
-
 
 
 
