@@ -5,6 +5,69 @@
 // Ryan Radloff
 
 /**********************************
+*****      DFF            *********
+**********************************/
+module DFF(clk, in, out);
+    input clk;
+    input in;
+    output out;
+    reg out;
+    
+    always @(posedge clk)
+    begin
+        out = in;
+    end
+endmodule
+
+/**********************************
+*****      Register16         *****
+**********************************/
+
+module REG16(inp, f_outp, clk);
+    input [15:0] inp; 
+    input clk;
+    wire[15:0] outp; 
+    output [15:0] f_outp; reg [15:0] f_outp;
+
+    REG4 reg1(inp[15:12], outp[15:12], clk),
+         reg2(inp[11:8], outp[11:8], clk),
+         reg3(inp[7:4], outp[7:4], clk),
+         reg4(inp[3:0], outp[3:0], clk);
+
+    always @*
+    begin
+        f_outp = outp;
+    end
+endmodule
+
+/**********************************
+*****      Register4          *****
+**********************************/
+module REG4(inp, f_outp, clk);
+    input [3:0] inp; wire [3:0] inp;
+    input clk; wire clk;
+    wire [3:0] outp;
+    output[3:0] f_outp; reg[3:0] f_outp;
+
+    DFF the_reg [3:0] (clk, inp, outp);
+    always @*
+    begin
+        f_outp = outp;
+    end
+endmodule
+
+/**********************************
+*****      MUX16           ********
+**********************************/
+module MUX16(channels, select, b);
+    input [15:0][15:0] channels;
+    input [3:0] select;
+
+    output [15:0] b;
+
+    assign b = channels[select];
+endmodule
+/**********************************
 *****      AND GATEs      *********
 **********************************/
 
@@ -192,7 +255,7 @@ module bit16_xnor (out, a, b);
 endmodule
 
 /***************************
-*******Half-Adder***********
+******* Half-Adder ***********
 ****************************/
 
 module add_half (input a, b, output c_out, sum);
@@ -203,7 +266,7 @@ module add_half (input a, b, output c_out, sum);
 endmodule
 
 /***************************
-*******Full-Adder***********
+******* Full-Adder ***********
 ****************************/
 
 module add_full (input a, b, c_in, output c_out, sum);
@@ -219,15 +282,15 @@ endmodule
 ****** 16 Bit-Adder ********
 ****************************/
 
-module bit16_adder(num1, num2, mode, carry, sum);
+module bit16_adder(num1, num2, mode, error, sum);
 
 input [15:0] num1; wire [15:0] num1;
 input [15:0] num2; wire [15:0] num2;
 input [15:0] mode; wire [15:0] mode;
 
 output [15:0] sum; wire [15:0] sum;
-output carry; wire carry;
-
+output error; wire error;
+wire carry; 
 wire[16:0] Cin;
 wire[15:0] Cout;
 wire[15:0] modB;
@@ -237,10 +300,28 @@ assign Cin[16:1]=Cout[15:0];
 
 
 assign carry=Cout[15];
+assign error = mode[0] ^ carry;
 assign modB[15:0] = num2[15:0] ^ mode[15:0];
 
 add_full FA[15:0] (num1[15:0],modB[15:0],Cin[15:0],Cout[15:0],sum[15:0]);
 
+endmodule
+
+//Multiplier & Divisor
+//Behavioral for now, may change later
+module bit16_multiplier(out, a, b)
+	input [15:0] a, b;
+	output [15:0] out;
+
+	assign out = a * b;
+
+endmodule
+
+module bit16_divisor(out, a, b)
+    input [15:0] a, b;
+    output [15:0] out;
+
+    assign out = a / b;
 endmodule
 
 /**********************************
@@ -250,9 +331,17 @@ endmodule
 // Test Bench //
 module testbench();
 
-    reg [15:0] a, b;
+    integer i;
+
+    reg error;
+    reg [3:0] opcode;
+    reg [15:0] a_in, b_in;
+    wire [15:0] a, b;
+    wire [3:0] select;
+    reg clk;
     reg [16:0] over;
-    wire [15:0] out [0:9];
+    wire [15:0] final_output;
+    wire [15:0] [15:0] out;
     reg [15:0]mode;
     bit16_and and_test(out[0], a, b);
     bit16_nand nand_test(out[5], a, b);
@@ -264,22 +353,60 @@ module testbench();
     bit16_xnor xnor_test(out[7], a, b);
     bit16_adder adder_test(a, b, mode[15:0], out[8][0], out[9]);
 
+    
+    MUX16   mux_output_select(out, select, final_output);
+
+    //DFF selector[3:0] (clk, opcode, select);
+    //DFF a_reg[15:0] (clk, a_in, a);
+    //DFF b_reg[15:0] (clk, b_in, b);
+    
+    REG4 selector (opcode, select, clk);
+    REG16 a_reg (a_in, a, clk);
+    REG16 b_reg (b_in, b, clk);
+    //Clock Thread
     initial begin
-        a = 'b0101001011001001; //21193
-        b = 'b0000110100111110; //3390
-        mode = 'b1111111111111111;
-        #7;
-        $display("AND a & b: %16b", out[0]);
-        $display("NAND ~(a & b): %16b", out[5]);
-        $display("NOT a: %16b", out[1]);
-        $display("NOT b: %16b", out[2]);
-        $display("OR a | b: %16b", out[3]);
-        $display("NOR ~(a | b): %16b", out[4]);
-        $display("XOR a ^ b: %16b", out[6]);
-        $display("XNOR ~(a ^ b): %16b", out[7]);
-        $display("SUB %d - %d = %d", a, b, out[8][0], out[9]);
-        //
+        forever
+        begin
+            clk = 0;
+            #5;
+            clk = 1;
+            #5;
+        end
+    end
+
+    //Stimulous + Display Thread
+    initial begin
+        mode = 0;
+        a_in = 'b0101001011001001; // 21193
+        b_in = 'b0000110100111110; // 3390
+        opcode = 9;
+        for (i = 1; i < 12; i = i + 1) begin
+            #1;
+            $display("ADD %d + %d = %d", a, b, final_output);
+        end
+        $finish();
     end
 
 endmodule
+
+
+/*
+Things left to do:
+Noop
+Clear
+SL & SR
+Modulus
+*/
+
+
+
+
+
+
+
+
+
+
+
+
 
