@@ -52,7 +52,7 @@ module breadboard(a_in, b_in, opcode, clk, a, b, final_output, prev_output, sele
     /* 0111    NOT */
     bit16_not not_t1(out[7], a);
     /* 1000    MOD */
-    modulus_16bit mod_test(a, b, out[8], error);
+    modulus_16bit mod_test(a, b, out[8], error_mat[8][0]);
     /* 1001    NAND */
     bit16_nand nand_test(out[9], a, b);
     /* 1010    NOR */

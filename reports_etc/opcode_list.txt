@@ -1,0 +1,16 @@
+0  > 0000     No Op
+1  > 0001    AND
+2  > 0010    OR
+3  > 0011    XOR
+4  > 0100    ADD
+5  > 0101    MULTIPLY
+6  > 0110    Shift Right
+7  > 0111    NOT
+8  > 1000    MOD
+9  > 1001    NAND
+10 > 1010    NOR
+11 > 1011    XNOR
+12 > 1100    SUBRACT
+13 > 1101    DIVIDE
+14 > 1110    Shift Left
+15 > 1111    Reset
