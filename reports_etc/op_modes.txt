@@ -1,0 +1,6 @@
+Operating Modes
+- Logic
+- Math
+- Error
+- Ready
+- Start
