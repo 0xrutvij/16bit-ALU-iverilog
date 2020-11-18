@@ -99,6 +99,8 @@ module testbench();
     wire  error;
 
     breadboard bb8 (a_in, b_in, opcode, clk, a, b, final_output, prev_output, select, error);
+    //string ops[int];
+    reg [8*9:1] string;
 
     //Clock Thread
     initial begin
@@ -111,65 +113,45 @@ module testbench();
         end
     end
 
+    //Display Thread
+    initial begin
+         /*ops = '{ "  RESET  " : 0,
+                     "   AND   " : 1,
+                     "   OR    " : 2,
+                     "   XOR   " : 3,
+                     "   ADD   " : 4,
+                     " MULTIPLY" : 5,
+                     " SHIFT R " : 6,
+                     "   NOT   " : 7,
+                     "   MOD   " : 8,
+                     "  NAND   " : 9,
+                     "   NOR   " : 10,
+                     "   XNOR  " : 11,
+                     " SUBTRACT" : 12,
+                     "  DIVIDE " : 13,
+                     " SHIFT L " : 14,
+                     "  RESET  " : 15
+                    };
+                    */
+            $display("+-------+----------------+-------+----------------+---------+---------+------+------+----------------+-----+--+");
+            $display("|Input A|A Binary        |Input B|B Binary        |Operation|Op Binary|Opcode|Output|O Binary        |Error|TM|");
+            i = 0;
+            //#6;
+        forever 
+        begin
+            $display("+-------+----------------+-------+----------------+---------+---------+------+------+----------------+-----+--+");
+            $display("|%7d|%16b|%7d|%16b|%9s|%9b|%6d|%6d|%16b|    %1b|%2d|",
+                    a, a, b, b, string, opcode, opcode, final_output, final_output, error, i);
+            i = i + 1;
+            #1;
+        end
+    end
+
     //Stimulous + Display Thread
     initial begin
-        a_in = 40000;
-        b_in = 5;
-        opcode = 13;
-        $display("DIV %d / %d = %d", a, b, prev_output);
-        $display("Error = %d", error);
-        #6;
-        //posedge
-        $display("------------------------------------------------------");
-        $display("DIV %d / %d = %d", a, b, final_output);
-        $display("Error = %d", error);
-        opcode = 0;
-        #10;
-        //posedge
-        $display("------------------------------------------------------");
-        $display("a = %d, b = %d, opcode = %d, output = %d", a, b, select, final_output);
-        opcode = 15;
-        #10;
-        //posedge
-        $display("------------------------------------------------------");
-        $display("a = %d, b = %d, opcode = %d, output = %d", a, b, select, final_output);
-        opcode = 0;
-        #10;
-        //posedge
-        $display("------------------------------------------------------");
-        $display("a = %d, b = %d, opcode = %d, output = %d", a, b, select, final_output);
-        opcode = 5;
-        a_in = 200;
-        b_in = 1000;
-        #10;
-        //posedge
-        $display("------------------------------------------------------");
-        $display("a = %d, b = %d, opcode = %d, output = %d", a, b, select, final_output);
-        $display("Error = %d", error);
-        opcode = 6;
-        a_in = 32;
-        b_in = 5;
-        #10;
-        //posedge
-        $display("------------------------------------------------------");
-        $display("a = %d, b = %d, opcode = %d, output = %d", a, b, select, final_output);
-        $display("Error = %d", error);
-        opcode = 14;
-        a_in = 2;
-        b_in = 4;
-        #10;
-        //posedge
-        $display("------------------------------------------------------");
-        $display("a = %d, b = %d, opcode = %d, output = %d", a, b, select, final_output);
-        $display("Error = %d", error);
-        opcode = 8;
-        a_in = 15;
-        b_in = 9;
-        #10;
-        //posedge
-        $display("------------------------------------------------------");
-        $display("a = %d, b = %d, opcode = %d, output = %d", a, b, select, final_output);
-        $display("Error = %d", error);
+        string = "  DIVIDE ";
+        a_in = 40000;b_in = 5;opcode = 13;
+        #15;
         $finish();
     end
 
