@@ -10,20 +10,19 @@
 /**********************************
 *****      BREADBOARD       *******
 **********************************/
-module breadboard(a_in, b_in, opcode, clk, a, b, final_output, prev_output, select, error);
+module breadboard(a_in, b_in, opcode, clk, a, b, final_output, prev_output, error);
     input [15:0] a_in, b_in;
     input [3:0] opcode;
     input clk;
     output [15:0] a, b, final_output, prev_output;
     wire [15:0] a, b, final_output, prev_output;
-    output [3:0] select;
-    wire [3:0] select;
     output error;
 
     /*Internal interfaces*/
     wire [15:0] mode = {16{opcode[3]}};
     wire [15:0] [15:0] out, error_mat;
     wire [15:0] errorline;
+    wire [3:0] select;
     wire reset = &select;
     wire never_reset = 0;
 
@@ -109,7 +108,7 @@ module testbench();
     wire [15:0] prev_output;
     wire  error;
 
-    breadboard bb8 (a_in, b_in, opcode, clk, a, b, final_output, prev_output, select, error);
+    breadboard bb8 (a_in, b_in, opcode, clk, a, b, final_output, prev_output, error);
     reg [8*9:1] string;
 
     //Clock Thread
@@ -133,7 +132,7 @@ module testbench();
         begin
             $display("+-------+----------------+-------+----------------+---------+---------+------+------+----------------+-----+---+");
             $display("|%7d|%16b|%7d|%16b|%9s|%9b|%6d|%6d|%16b|    %1b|%3d|",
-                    a, a, b, b, string, select, select, final_output, final_output, error, i);
+                    a, a, b, b, string, opcode, opcode, final_output, final_output, error, i);
             if (i%100 == 7 && i != 7) 
             begin
                 $display("+-------+----------------+-------+----------------+---------+---------+------+------+----------------+-----+---+");
