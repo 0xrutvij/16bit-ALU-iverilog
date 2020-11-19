@@ -10,16 +10,17 @@
 /**********************************
 *****      BREADBOARD       *******
 **********************************/
-module breadboard(a_in, b_in, opcode, clk, a, b, final_output, prev_output, error);
+module breadboard(a_in, b_in, opcode, clk, a, b, final_output, error);
     input [15:0] a_in, b_in;
     input [3:0] opcode;
     input clk;
-    output [15:0] a, b, final_output, prev_output;
-    wire [15:0] a, b, final_output, prev_output;
+    output [15:0] a, b, final_output;
+    wire [15:0] a, b, final_output;
     output error;
 
     /*Internal interfaces*/
     wire [15:0] mode = {16{opcode[3]}};
+    wire [15:0] prev_output;
     wire [15:0] [15:0] out, error_mat;
     wire [15:0] errorline;
     wire [3:0] select;
@@ -108,7 +109,7 @@ module testbench();
     wire [15:0] prev_output;
     wire  error;
 
-    breadboard bb8 (a_in, b_in, opcode, clk, a, b, final_output, prev_output, error);
+    breadboard bb8 (a_in, b_in, opcode, clk, a, b, final_output, error);
     reg [8*9:1] string;
 
     //Clock Thread
