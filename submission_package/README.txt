@@ -11,11 +11,11 @@ Output
 
 	> ./a.out
 
-Other two verilog files are dependencies for the main file, trohoc.v
+** Other two verilog files are dependencies for the main file, trohoc.v
 
-Report is the pdf file.
+** Report is the pdf file. It contains the list of parts, circuit diagram, state machine diagram, state tables, list of opcodes and output.
 
-output.txt is a sample output.
+** output.txt is a sample output.
 
 
 Folder Contents

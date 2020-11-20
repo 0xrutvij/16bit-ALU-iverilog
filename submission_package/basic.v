@@ -1,3 +1,12 @@
+/**************************************************************
+* Cohort Name: Trohoc                                         *
+* Authors: Anindita Palit, Emory Blair, Khalid Dakak,         *
+*          Rutvij Shah and Ryan Radloff.                      *
+* Github repo: https://github.com/0xrutvij/16bit-ALU-iverilog *
+* Date: 11/19/2020                                            *
+**************************************************************/
+
+
 /**********************************
 *****      DFF            *********
 **********************************/
@@ -7,7 +16,7 @@ module DFF(clk, in, out, reset);
     input reset;
     output out;
     reg out;
-    
+
     always @(posedge clk or posedge reset)
     if (reset) begin
         out = 0;
@@ -51,7 +60,7 @@ module MUX2 (out, select, in0, in1);
     input select; wire select;
     input [15:0] in0, in1; wire [15:0] in0, in1;
 
-    assign out = select ? in1 : in0; 
+    assign out = select ? in1 : in0;
 
 endmodule
 
@@ -63,7 +72,7 @@ endmodule
 module bit4_and(out, a, b);
     input[3:0] a, b;
     output[3:0] out;
-    
+
     assign out[3] = a[3] & b[3];
     assign out[2] = a[2] & b[2];
     assign out[1] = a[1] & b[1];
@@ -79,7 +88,7 @@ module bit8_and (out, a, b);
 
     bit4_and t1(out[7:4], a[7:4], b[7:4]),
              t2(out[3:0], a[3:0], b[3:0]);
-    
+
 endmodule
 
 /**********************************
@@ -90,7 +99,7 @@ endmodule
 module bit4_not(out, a);
     input[3:0] a;
     output[3:0] out;
-    
+
     assign out[3] = ~a[3];
     assign out[2] = ~a[2];
     assign out[1] = ~a[1];
@@ -106,7 +115,7 @@ module bit8_not (out, a);
 
     bit4_not t1(out[7:4], a[7:4]),
              t2(out[3:0], a[3:0]);
-    
+
 endmodule
 /**********************************
 *****      OR GATEs      *********
@@ -116,7 +125,7 @@ endmodule
 module bit4_or(out, a, b);
     input[3:0] a, b;
     output[3:0] out;
-    
+
     assign out[3] = a[3] | b[3];
     assign out[2] = a[2] | b[2];
     assign out[1] = a[1] | b[1];
@@ -132,7 +141,7 @@ module bit8_or (out, a, b);
 
     bit4_or t1(out[7:4], a[7:4], b[7:4]),
             t2(out[3:0], a[3:0], b[3:0]);
-    
+
 endmodule
 
 /**********************************
@@ -143,7 +152,7 @@ endmodule
 module bit4_xor(out, a, b);
     input[3:0] a, b;
     output[3:0] out;
-    
+
     assign out[3] = a[3] ^ b[3];
     assign out[2] = a[2] ^ b[2];
     assign out[1] = a[1] ^ b[1];
@@ -159,7 +168,7 @@ module bit8_xor (out, a, b);
 
     bit4_xor t1(out[7:4], a[7:4], b[7:4]),
              t2(out[3:0], a[3:0], b[3:0]);
-    
+
 endmodule
 
 /***************************

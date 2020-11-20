@@ -1,13 +1,21 @@
+/**************************************************************
+* Cohort Name: Trohoc                                         *
+* Authors: Anindita Palit, Emory Blair, Khalid Dakak,         *
+*          Rutvij Shah and Ryan Radloff.                      *
+* Github repo: https://github.com/0xrutvij/16bit-ALU-iverilog *
+* Date: 11/19/2020                                            *
+**************************************************************/
+
 `include "basic.v"
 /**********************************
 *****      Register16         *****
 **********************************/
 
 module REG16(inp, f_outp, clk, reset);
-    input [15:0] inp; 
+    input [15:0] inp;
     input clk;
     input reset;
-    wire[15:0] outp; 
+    wire[15:0] outp;
     output [15:0] f_outp; reg [15:0] f_outp;
 
     REG4 reg1(inp[15:12], outp[15:12], clk, reset),
@@ -142,7 +150,7 @@ input [15:0] mode; wire [15:0] mode;
 
 output [15:0] sum; wire [15:0] sum;
 output error; wire error;
-wire carry; 
+wire carry;
 wire[16:0] Cin;
 wire[15:0] Cout;
 wire[15:0] modB;
@@ -170,16 +178,16 @@ module multiplier_16bit(a, b, out, error);
     output error; reg error;
     //output error; wire error;
     reg [31:0] mult;
-    integer i, j; 
+    integer i, j;
 
     always @(a, b)
     begin
         mult = a*b;
         error = 0;
-        for (i = 31; i > 15; i = i - 1) 
+        for (i = 31; i > 15; i = i - 1)
         begin
             error = error | mult[i];
-            out[i-16] = mult[i-16];    
+            out[i-16] = mult[i-16];
         end
     end
 endmodule
@@ -192,7 +200,7 @@ module divider_16bit(a, b, out, error);
     output [15:0] out; reg [15:0] out;
     output error; reg error;
     //output error; wire error;
-    integer i, j; 
+    integer i, j;
 
     always @(a, b)
     begin
@@ -209,7 +217,7 @@ module modulus_16bit(a, b, out, error);
     output [15:0] out; reg [15:0] out;
     output error; reg error;
     //output error; wire error;
-    integer i, j; 
+    integer i, j;
 
     always @(a, b)
     begin

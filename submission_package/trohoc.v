@@ -1,9 +1,10 @@
-// Khalid Dakak
-// Anindita Palit
-// Emory Blair
-// Rutvij Shah
-// Ryan Radloff
-
+/**************************************************************
+* Cohort Name: Trohoc                                         *
+* Authors: Anindita Palit, Emory Blair, Khalid Dakak,         *
+*          Rutvij Shah and Ryan Radloff.                      *
+* Github repo: https://github.com/0xrutvij/16bit-ALU-iverilog *
+* Date: 11/19/2020                                            *
+**************************************************************/
 `include "circuit_components.v"
 
 
@@ -27,7 +28,7 @@ module breadboard(a_in, b_in, opcode, clk, a, b, final_output, error);
     wire reset = &select;
     wire never_reset = 0;
 
-    /*Registers*/ 
+    /*Registers*/
     REG4 selector (opcode, select, clk, reset);
     REG16 a_reg (a_in, a, clk, reset);
     REG16 b_reg (b_in, b, clk, reset);
@@ -86,7 +87,7 @@ module breadboard(a_in, b_in, opcode, clk, a, b, final_output, error);
 
     /**/
     assign error = errorline[0];
-    
+
 
 endmodule
 
@@ -129,12 +130,12 @@ module testbench();
             $display("|Input A|    A Binary    |Input B|    B Binary    |Operation|Op Binary|Opcode|Output|    O Binary    |Error| TM|");
             i = 7;
             #7;
-        forever 
+        forever
         begin
             $display("+-------+----------------+-------+----------------+---------+---------+------+------+----------------+-----+---+");
             $display("|%7d|%16b|%7d|%16b|%9s|%9b|%6d|%6d|%16b|    %1b|%3d|",
                     a, a, b, b, string, opcode, opcode, final_output, final_output, error, i);
-            if (i%100 == 7 && i != 7) 
+            if (i%100 == 7 && i != 7)
             begin
                 $display("+-------+----------------+-------+----------------+---------+---------+------+------+----------------+-----+---+");
                 $display("|Input A|    A Binary    |Input B|    B Binary    |Operation|Op Binary|Opcode|Output|    O Binary    |Error| TM|");
@@ -220,7 +221,3 @@ Clear => DONE
 SL & SR => DONE
 Modulus
 */
-
-
-
-
